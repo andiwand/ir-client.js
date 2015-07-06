@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <title>test ir remote</title>
+
+  <script type="text/javascript" src="../libs/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="../libs/observe-js/src/observe.js"></script>
+  <script type="text/javascript" src="../build/ir-client.min.js"></script>
+
+  <script>
+$.getJSON("config.json", function(data) {
+  IR.interface.load = function() {
+    return data;
+  };
+
+  IR.remote.load();
+
+  var observer = new ArrayObserver(IR.remote.data.remotes);
+  observer.open(function(splices) {
+    console.log(splices);
+  });
+
+  IR.remote.data.remotes.push({});
+});
+  </script>
+</head>
+<body>
+</body>
+</html>

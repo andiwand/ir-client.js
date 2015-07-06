@@ -84,6 +84,39 @@ function isInt32(o) {
 
 var IR = IR || {};
 
+IR.interface = IR.interface || {};
+
+$.extend(IR.interface, {
+  discover: notImplemented,   // (int port, int timeout, int maxPacketSize) -> Station[]
+  send: notImplemented,       // (Station station, RawFrame raw)
+  receive: notImplemented,    // (Station station) -> RawFrame
+  configure: notImplemented,  // (Station station, String name, String ssid, String password)
+
+  load: notImplemented,       // TODO
+  save: notImplemented        // TODO
+});
+
+var IR = IR || {};
+
+var IR = IR || {};
+
+IR.client = IR.client || {};
+
+$.extend(IR.remote, {
+  default: {
+    error_settings: {
+      frequency_error: new MarginOfError(0.1, false),
+      time_error: new MarginOfError(0.1, false)
+    }
+  },
+  const: {
+    error_frequency_key: "frequency_error",
+    error_time_key: "time_error"
+  }
+});
+
+var IR = IR || {};
+
 IR.Frame = function() {};
 
 IR.Frame.prototype.toString = function() {
@@ -119,159 +152,6 @@ IR.Frame.deserialize = function(o) {
   var protocol = IR.Protocol.map[o.protocol];
   var frameClass = protocol.getFrameClass();
   return frameClass.deserialize(o.data);
-};
-
-var IR = IR || {};
-
-IR.default = {
-  error_settings: {
-    frequency_error: new MarginOfError(0.1, false),
-    time_error: new MarginOfError(0.1, false)
-  }
-};
-
-IR.const = {
-  error_frequency_key: "frequency_error",
-  error_time_key: "time_error"
-};
-
-IR.__impl =  IR.__impl || {
-  station_discovery: notImplemented,  // (int port, int timeout, int maxPacketSize) -> Station[]
-  station_send: notImplemented,       // (Station station, RawFrame raw)
-  station_receive: notImplemented,    // (Station station) -> RawFrame
-  station_configure: notImplemented,  // (Station station, String name, String ssid, String password)
-};
-
-var IR = IR || {};
-
-IR.Protocol = function(name, frequency) {
-  assert(isString(name));
-  assert((frequency === null) || isInt(frequency));
-  this.name = name;
-  this.frequency = frequency;
-
-  IR.Protocol.map[name] = this;
-};
-
-IR.Protocol.map = {};
-
-IR.Protocol.prototype.toString = function() {
-  return this.name + " protocol";
-};
-
-IR.Protocol.prototype.getFrameClass = notImplemented;
-
-IR.Protocol.prototype.encode = function(frame, settings) {
-  assert(frame instanceof this.getFrameClass());
-  var raw = new IR.RawFrame(frame.getFrequency(), []);
-  var helper = new IR.RawHelper(raw, settings);
-  this.__encode(frame, helper, settings);
-  return raw;
-};
-
-IR.Protocol.prototype.__encode = notImplemented;
-
-IR.Protocol.prototype.decode = function(raw, settings) {
-  assert(raw instanceof IR.RawFrame);
-  var helper = new IR.RawHelper(raw, settings);
-  return this.__decode(helper, settings);
-};
-
-IR.Protocol.prototype.__decode = notImplemented;
-
-var IR = IR || {};
-
-IR.Station = function(name, address, port) {
-  assert(isString(name));
-  assert(isString(address));
-  assert(isInt(port));
-  this.name = name;
-  this.__address = address;
-  this.__port = port;
-};
-
-IR.Station.discover = function(port, timeout, maxSize) {
-  assert(isInt(port));
-  assert(isInt(timeout));
-  assert(isInt(maxSize));
-  IR.__impl.station_discovery(port, timeout, maxSize);
-};
-
-IR.Station.prototype.send = function(frame) {
-  assert(frame instanceof IR.Frame);
-  IR.__impl.station_send(this, frame);
-};
-
-IR.Station.prototype.receive = function() {
-  return IR.__impl.station_receive(this);
-};
-
-IR.Station.prototype.configure = function(name, ssid, password) {
-  assert(isString(name));
-  assert(isString(ssid));
-  assert(isString(password));
-  IR.__impl.station_configure(this, name, ssid, password);
-};
-
-IR.Station.prototype.serialize = function() {
-  var result = {};
-  result.name = this.name;
-  result.address = this.__address;
-  result.port = this.__port;
-  return result;
-};
-
-IR.Station.deserialize = function(o) {
-  return new IR.Station(o.name, o.address, o.port);
-};
-
-var IR = IR || {};
-
-IR.RawHelper = function(raw, settings) {
-  assert(raw instanceof IR.RawFrame);
-  assert(isObject(settings));
-  this.__raw = raw;
-  this.__settings = settings;
-  this.__pos = 0;
-};
-
-IR.RawHelper.prototype.size = function() {
-  return this.__raw.__times.length;
-};
-
-IR.RawHelper.prototype.position = function(pos) {
-  if (pos) {
-    assert(isInt(pos));
-    this.__pos = pos;
-  } else {
-    return this.__pos;
-  }
-};
-
-IR.RawHelper.prototype.write = function(t) {
-  this.__raw.__times[this.__pos] = t;
-  this.__pos++;
-};
-
-IR.RawHelper.prototype.matchFrequency = function(reference) {
-  var moe = this.__settings[IR.const.error_frequency_key];
-  return moe.check(this.__raw.__frequency, reference);
-};
-
-IR.RawHelper.prototype.matchTime = function(reference) {
-  var moe = this.__settings[IR.const.error_time_key];
-  var time = this.__raw.__times[this.__pos];
-  var result = moe.check(time, reference);
-  if (result) this.__pos++;
-  return result;
-};
-
-IR.RawHelper.prototype.match = function(references) {
-  assert(isArray(references));
-  for (var i = 0; i < references.length; i++) {
-    if (this.matchTime(references[i])) return i;
-  }
-  return -1;
 };
 
 var IR = IR || {};
@@ -326,6 +206,43 @@ IR.RawFrame.prototype.serialize = function() {
 IR.RawFrame.deserialize = function(o) {
   return new IR.RawFrame(o.frequency, o.times);
 };
+
+var IR = IR || {};
+
+IR.Protocol = function(name, frequency) {
+  assert(isString(name));
+  assert((frequency === null) || isInt(frequency));
+  this.name = name;
+  this.frequency = frequency;
+
+  IR.Protocol.map[name] = this;
+};
+
+IR.Protocol.map = {};
+
+IR.Protocol.prototype.toString = function() {
+  return this.name + " protocol";
+};
+
+IR.Protocol.prototype.getFrameClass = notImplemented;
+
+IR.Protocol.prototype.encode = function(frame, settings) {
+  assert(frame instanceof this.getFrameClass());
+  var raw = new IR.RawFrame(frame.getFrequency(), []);
+  var helper = new IR.RawHelper(raw, settings);
+  this.__encode(frame, helper, settings);
+  return raw;
+};
+
+IR.Protocol.prototype.__encode = notImplemented;
+
+IR.Protocol.prototype.decode = function(raw, settings) {
+  assert(raw instanceof IR.RawFrame);
+  var helper = new IR.RawHelper(raw, settings);
+  return this.__decode(helper, settings);
+};
+
+IR.Protocol.prototype.__decode = notImplemented;
 
 var IR = IR || {};
 
@@ -405,5 +322,115 @@ $.extend(IR.RawProtocol, {
   },
   decode: function(raw, settings) {
     return raw;
+  }
+});
+
+var IR = IR || {};
+
+IR.Station = function(name, address, port) {
+  assert(isString(name));
+  assert(isString(address));
+  assert(isInt(port));
+  this.name = name;
+  this._address = address;
+  this._port = port;
+};
+
+IR.Station.discover = function(port, timeout, maxSize) {
+  assert(isInt(port));
+  assert(isInt(timeout));
+  assert(isInt(maxSize));
+  IR.interface.discover(port, timeout, maxSize);
+};
+
+IR.Station.prototype.send = function(frame) {
+  assert(frame instanceof IR.Frame);
+  IR.interface.send(this, frame);
+};
+
+IR.Station.prototype.receive = function() {
+  return IR.interface.receive(this);
+};
+
+IR.Station.prototype.configure = function(name, ssid, password) {
+  assert(isString(name));
+  assert(isString(ssid));
+  assert(isString(password));
+  IR.interface.configure(this, name, ssid, password);
+};
+
+IR.Station.prototype.serialize = function() {
+  var result = {};
+  result.name = this.name;
+  result.address = this._address;
+  result.port = this._port;
+  return result;
+};
+
+IR.Station.deserialize = function(o) {
+  return new IR.Station(o.name, o.address, o.port);
+};
+
+var IR = IR || {};
+
+IR.RawHelper = function(raw, settings) {
+  assert(raw instanceof IR.RawFrame);
+  assert(isObject(settings));
+  this.__raw = raw;
+  this.__settings = settings;
+  this.__pos = 0;
+};
+
+IR.RawHelper.prototype.size = function() {
+  return this.__raw.__times.length;
+};
+
+IR.RawHelper.prototype.position = function(pos) {
+  if (pos) {
+    assert(isInt(pos));
+    this.__pos = pos;
+  } else {
+    return this.__pos;
+  }
+};
+
+IR.RawHelper.prototype.write = function(t) {
+  this.__raw.__times[this.__pos] = t;
+  this.__pos++;
+};
+
+IR.RawHelper.prototype.matchFrequency = function(reference) {
+  var moe = this.__settings[IR.const.error_frequency_key];
+  return moe.check(this.__raw.__frequency, reference);
+};
+
+IR.RawHelper.prototype.matchTime = function(reference) {
+  var moe = this.__settings[IR.const.error_time_key];
+  var time = this.__raw.__times[this.__pos];
+  var result = moe.check(time, reference);
+  if (result) this.__pos++;
+  return result;
+};
+
+IR.RawHelper.prototype.match = function(references) {
+  assert(isArray(references));
+  for (var i = 0; i < references.length; i++) {
+    if (this.matchTime(references[i])) return i;
+  }
+  return -1;
+};
+
+var IR = IR || {};
+
+IR.remote = IR.remote || {};
+
+$.extend(IR.remote, {
+  data: null,
+  load: function() {
+    IR.remote.data = IR.interface.load();
+    // TODO: verify data
+  },
+  save: function() {
+    IR.interface.save(data);
   }
 });

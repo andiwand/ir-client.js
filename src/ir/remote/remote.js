@@ -22,7 +22,7 @@ $.extend(IR.remote, {
     IR.remote._observers.push(observer);
   },
   _loaded: function(state) {
-    // TODO: verify data
+    // TODO: verify state
     IR.remote.state = state;
     IR.remote._ready = true;
     IR.remote._fire();

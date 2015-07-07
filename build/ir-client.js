@@ -425,7 +425,7 @@ var IR = IR || {};
 IR.remote = IR.remote || {};
 
 $.extend(IR.remote, {
-  data: null,
+  state: null,
   _ready: false,
   _observers: [],
   init: function() {
@@ -443,13 +443,13 @@ $.extend(IR.remote, {
     if (IR.remote._ready) observer();
     IR.remote._observers.push(observer);
   },
-  _loaded: function(data) {
-    // TODO: verify data
-    IR.remote.data = data;
+  _loaded: function(state) {
+    // TODO: verify state
+    IR.remote.state = state;
     IR.remote._ready = true;
     IR.remote._fire();
   },
   save: function() {
-    IR.interface.save(data);
+    IR.interface.save(state);
   }
 });

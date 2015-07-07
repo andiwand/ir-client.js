@@ -8,19 +8,24 @@
   <script type="text/javascript" src="../build/ir-client.min.js"></script>
 
   <script>
-$.getJSON("config.json", function(data) {
-  IR.interface.load = function() {
-    return data;
-  };
+IR.interface.load = function(callback) {
+  $.getJSON("config.json", function(data) {
+    callback(data);
+  });
+};
 
-  IR.remote.load();
-
+function ready() {
   var observer = new ArrayObserver(IR.remote.data.remotes);
   observer.open(function(splices) {
     console.log(splices);
   });
 
   IR.remote.data.remotes.push({});
+}
+
+$(function() {
+  IR.remote.addObserver(ready);
+  IR.remote.init();
 });
   </script>
 </head>

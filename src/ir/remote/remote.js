@@ -21,13 +21,33 @@ $.extend(IR.remote, {
     if (IR.remote._ready) observer();
     IR.remote._observers.push(observer);
   },
-  _loaded: function(state) {
-    // TODO: verify state
+  _verify: function(config) {
+    // TODO: implement
+    return true;
+  },
+  _load: function(config) {
+    var state = {};
+
+    // TODO: maybe deep copy
+    $.extend(state, config);
+    state.devices = [];
+
     IR.remote.state = state;
+  },
+  _loaded: function(config) {
+    IR.remote._verify(config);
+    IR.remote._load(config);
+
     IR.remote._ready = true;
     IR.remote._fire();
   },
   save: function() {
-    IR.interface.save(state);
+    var config = {};
+
+    // TODO: maybe deep copy
+    $.extend(config, IR.remote.state);
+    delete config.devices;
+
+    IR.interface.save(config);
   }
 });

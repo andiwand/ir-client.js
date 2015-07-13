@@ -1,23 +1,23 @@
 var IR = IR || {};
 
 IR.Station = function(name, address, port) {
-  assert(isString(name));
-  assert(isString(address));
-  assert(isInt(port));
+  Exception.assert(Object.isString(name));
+  Exception.assert(Object.isString(address));
+  Exception.assert(Object.isInt(port));
   this.name = name;
   this._address = address;
   this._port = port;
 };
 
 IR.Station.discover = function(port, timeout, maxSize) {
-  assert(isInt(port));
-  assert(isInt(timeout));
-  assert(isInt(maxSize));
+  Exception.assert(Object.isInt(port));
+  Exception.assert(Object.isInt(timeout));
+  Exception.assert(Object.isInt(maxSize));
   IR.interface.discover(port, timeout, maxSize);
 };
 
 IR.Station.prototype.send = function(frame) {
-  assert(frame instanceof IR.Frame);
+  Exception.assert(frame instanceof IR.Frame);
   IR.interface.send(this, frame);
 };
 
@@ -26,9 +26,9 @@ IR.Station.prototype.receive = function() {
 };
 
 IR.Station.prototype.configure = function(name, ssid, password) {
-  assert(isString(name));
-  assert(isString(ssid));
-  assert(isString(password));
+  Exception.assert(Object.isString(name));
+  Exception.assert(Object.isString(ssid));
+  Exception.assert(Object.isString(password));
   IR.interface.configure(this, name, ssid, password);
 };
 

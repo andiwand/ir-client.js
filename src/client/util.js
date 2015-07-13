@@ -1,46 +1,46 @@
 var IR = IR || {};
 
 IR.RawHelper = function(raw, settings) {
-  assert(raw instanceof IR.RawFrame);
-  assert(isObject(settings));
-  this.__raw = raw;
-  this.__settings = settings;
-  this.__pos = 0;
+  Exception.assert(raw instanceof IR.RawFrame);
+  Exception.assert(isObject(settings));
+  this._raw = raw;
+  this._settings = settings;
+  this._pos = 0;
 };
 
 IR.RawHelper.prototype.size = function() {
-  return this.__raw.__times.length;
+  return this._raw._times.length;
 };
 
 IR.RawHelper.prototype.position = function(pos) {
   if (pos) {
-    assert(isInt(pos));
-    this.__pos = pos;
+    Exception.assert(isInt(pos));
+    this._pos = pos;
   } else {
-    return this.__pos;
+    return this._pos;
   }
 };
 
 IR.RawHelper.prototype.write = function(t) {
-  this.__raw.__times[this.__pos] = t;
-  this.__pos++;
+  this._raw._times[this._pos] = t;
+  this._pos++;
 };
 
 IR.RawHelper.prototype.matchFrequency = function(reference) {
-  var moe = this.__settings[IR.const.error_frequency_key];
-  return moe.check(this.__raw.__frequency, reference);
+  var moe = this._settings[IR.const.error_frequency_key];
+  return moe.check(this._raw._frequency, reference);
 };
 
 IR.RawHelper.prototype.matchTime = function(reference) {
-  var moe = this.__settings[IR.const.error_time_key];
-  var time = this.__raw.__times[this.__pos];
+  var moe = this._settings[IR.const.error_time_key];
+  var time = this._raw._times[this._pos];
   var result = moe.check(time, reference);
-  if (result) this.__pos++;
+  if (result) this._pos++;
   return result;
 };
 
 IR.RawHelper.prototype.match = function(references) {
-  assert(isArray(references));
+  Exception.assert(Object.isArray(references));
   for (var i = 0; i < references.length; i++) {
     if (this.matchTime(references[i])) return i;
   }

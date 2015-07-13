@@ -1,8 +1,8 @@
 var IR = IR || {};
 
 IR.Protocol = function(name, frequency) {
-  assert(isString(name));
-  assert((frequency === null) || isInt(frequency));
+  Exception.assert(Object.isString(name));
+  Exception.assert((frequency === null) || Object.isInt(frequency));
   this.name = name;
   this.frequency = frequency;
 
@@ -15,22 +15,22 @@ IR.Protocol.prototype.toString = function() {
   return this.name + " protocol";
 };
 
-IR.Protocol.prototype.getFrameClass = notImplemented;
+IR.Protocol.prototype.getFrameClass = Util.notImplemented;
 
 IR.Protocol.prototype.encode = function(frame, settings) {
-  assert(frame instanceof this.getFrameClass());
+  Exception.assert(frame instanceof this.getFrameClass());
   var raw = new IR.RawFrame(frame.getFrequency(), []);
   var helper = new IR.RawHelper(raw, settings);
-  this.__encode(frame, helper, settings);
+  this._encode(frame, helper, settings);
   return raw;
 };
 
-IR.Protocol.prototype.__encode = notImplemented;
+IR.Protocol.prototype._encode = Util.notImplemented;
 
 IR.Protocol.prototype.decode = function(raw, settings) {
-  assert(raw instanceof IR.RawFrame);
+  Exception.assert(raw instanceof IR.RawFrame);
   var helper = new IR.RawHelper(raw, settings);
-  return this.__decode(helper, settings);
+  return this._decode(helper, settings);
 };
 
-IR.Protocol.prototype.__decode = notImplemented;
+IR.Protocol.prototype._decode = Util.notImplemented;

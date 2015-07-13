@@ -4,15 +4,15 @@ IR.RawFrame = function(frequency, times) {
   IR.Frame.call(this, IR.Frame);
   assert(isInt(frequency));
   assert(isArray(times));
-  this.__frequency = frequency;
-  this.__times = times;
+  this._frequency = frequency;
+  this._times = times;
 };
 
 IR.RawFrame.prototype = Object.create(IR.Frame.prototype);
 
 IR.RawFrame.prototype.constructor = IR.RawFrame;
 
-IR.RawFrame.prototype.getProtocol = dynamicGet(IR, "RawProtocol");
+IR.RawFrame.prototype.getProtocol = Util.dynamicGet(IR, "RawProtocol");
 
 IR.RawFrame.prototype.getFrequency = function() {
   return this.frequency;
@@ -20,8 +20,8 @@ IR.RawFrame.prototype.getFrequency = function() {
 
 IR.RawFrame.prototype.serialize = function() {
   var result = {};
-  result.frequency = this.__frequency;
-  result.times = this.__times;
+  result.frequency = this._frequency;
+  result.times = this._times;
   return result;
 };
 

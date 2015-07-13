@@ -5,8 +5,8 @@ IR.client = IR.client || {};
 $.extend(IR.remote, {
   default: {
     error_settings: {
-      frequency_error: new MarginOfError(0.1, false),
-      time_error: new MarginOfError(0.1, false)
+      frequency_error: new andiwand.MarginOfError(0.1, false),
+      time_error: new andiwand.MarginOfError(0.1, false)
     }
   },
   const: {

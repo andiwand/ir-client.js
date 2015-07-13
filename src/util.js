@@ -1,8 +1,8 @@
 var IR = IR || {};
 
 IR.RawHelper = function(raw, settings) {
-  Exception.assert(raw instanceof IR.RawFrame);
-  Exception.assert(isObject(settings));
+  andiwand.assert(raw instanceof IR.RawFrame);
+  andiwand.assert(andiwand.isObject(settings));
   this._raw = raw;
   this._settings = settings;
   this._pos = 0;
@@ -14,7 +14,7 @@ IR.RawHelper.prototype.size = function() {
 
 IR.RawHelper.prototype.position = function(pos) {
   if (pos) {
-    Exception.assert(isInt(pos));
+    andiwand.assert(isInt(pos));
     this._pos = pos;
   } else {
     return this._pos;
@@ -40,7 +40,7 @@ IR.RawHelper.prototype.matchTime = function(reference) {
 };
 
 IR.RawHelper.prototype.match = function(references) {
-  Exception.assert(Object.isArray(references));
+  andiwand.assert(andiwand.isArray(references));
   for (var i = 0; i < references.length; i++) {
     if (this.matchTime(references[i])) return i;
   }

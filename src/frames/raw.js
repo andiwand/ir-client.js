@@ -2,8 +2,8 @@ var IR = IR || {};
 
 IR.RawFrame = function(frequency, times) {
   IR.Frame.call(this, IR.Frame);
-  assert(isInt(frequency));
-  assert(isArray(times));
+  andiwand(andiwand.isInt(frequency));
+  andiwand(andiwand.isArray(times));
   this._frequency = frequency;
   this._times = times;
 };
@@ -12,7 +12,7 @@ IR.RawFrame.prototype = Object.create(IR.Frame.prototype);
 
 IR.RawFrame.prototype.constructor = IR.RawFrame;
 
-IR.RawFrame.prototype.getProtocol = Util.dynamicGet(IR, "RawProtocol");
+IR.RawFrame.prototype.getProtocol = andiwand.dynamicGet(IR, "RawProtocol");
 
 IR.RawFrame.prototype.getFrequency = function() {
   return this.frequency;

@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: ["src/*.js", "src/**/*.js"],
-        dest: "build/<%= pkg.name %>.js"
+        dest: "build/ir-client.js"
       }
     },
     jshint: {
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     uglify: {
       build: {
         src: "<%= concat.dist.dest %>",
-        dest: "build/<%= pkg.name %>.min.js"
+        dest: "build/ir-client.min.js"
       }
     },
     watch: {

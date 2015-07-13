@@ -6,7 +6,7 @@ IR.Frame.prototype.toString = function() {
   return JSON.stringify(this.serialize());
 };
 
-IR.Frame.prototype.getProtocol = Util.notImplemented;
+IR.Frame.prototype.getProtocol = andiwand.notImplemented;
 
 IR.Frame.prototype.getFrequency = function() {
   return this.getProtocol().frequency;
@@ -21,7 +21,7 @@ IR.Frame.prototype.decode = function(raw, settings) {
 };
 
 IR.Frame.serialize = function(frame) {
-  Exception.assert(frame instanceof IR.Frame);
+  andiwand.assert(frame instanceof IR.Frame);
   var result = {};
   var protocol = frame.getProtocol();
   result.protocol = protocol.name;
@@ -29,7 +29,7 @@ IR.Frame.serialize = function(frame) {
   return result;
 };
 
-IR.Frame.prototype.serialize = Util.notImplemented;
+IR.Frame.prototype.serialize = andiwand.notImplemented;
 
 IR.Frame.deserialize = function(o) {
   var protocol = IR.Protocol.map[o.protocol];

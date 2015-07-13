@@ -14,7 +14,7 @@ $.extend(IR.NecProtocol, {
   _BITS: 32,
   _REPEAT: 0xffffffff,
 
-  getFrameClass: Util.dynamicGet(IR, "NecFrame"),
+  getFrameClass: andiwand.dynamicGet(IR, "NecFrame"),
   _encode: function(frame, helper, settings) {
     helper.write(this._TIME_INIT_MARK);
 

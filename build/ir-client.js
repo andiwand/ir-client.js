@@ -1,44 +1,38 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.client = IR.client || {};
+ir.client = ir.client || {};
 
-$.extend(IR.remote, {
-  default: {
-    error_settings: {
-      frequency_error: new andiwand.MarginOfError(0.1, false),
-      time_error: new andiwand.MarginOfError(0.1, false)
-    }
-  },
-  const: {
-    error_frequency_key: "frequency_error",
-    error_time_key: "time_error"
+$.extend(ir.remote, {
+  defaultSetting: {
+    errorFrequency: new andiwand.MarginOfError(0.1, false),
+    errorTime: new andiwand.MarginOfError(0.1, false)
   }
 });
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.Frame = function() {};
+ir.Frame = function() {};
 
-IR.Frame.prototype.toString = function() {
+ir.Frame.prototype.toString = function() {
   return JSON.stringify(this.serialize());
 };
 
-IR.Frame.prototype.getProtocol = andiwand.notImplemented;
+ir.Frame.prototype.getProtocol = andiwand.notImplemented;
 
-IR.Frame.prototype.getFrequency = function() {
+ir.Frame.prototype.getFrequency = function() {
   return this.getProtocol().frequency;
 };
 
-IR.Frame.prototype.encode = function(settings) {
+ir.Frame.prototype.encode = function(settings) {
   return this.getProtocol().encode(this, settings);
 };
 
-IR.Frame.prototype.decode = function(raw, settings) {
+ir.Frame.prototype.decode = function(raw, settings) {
   return this.getProtocol().decode(raw, settings);
 };
 
-IR.Frame.serialize = function(frame) {
-  andiwand.assert(frame instanceof IR.Frame);
+ir.Frame.serialize = function(frame) {
+  andiwand.assert(frame instanceof ir.Frame);
   var result = {};
   var protocol = frame.getProtocol();
   result.protocol = protocol.name;
@@ -46,65 +40,65 @@ IR.Frame.serialize = function(frame) {
   return result;
 };
 
-IR.Frame.prototype.serialize = andiwand.notImplemented;
+ir.Frame.prototype.serialize = andiwand.notImplemented;
 
-IR.Frame.deserialize = function(o) {
-  var protocol = IR.Protocol.map[o.protocol];
+ir.Frame.deserialize = function(o) {
+  var protocol = ir.Protocol.map[o.protocol];
   var frameClass = protocol.getFrameClass();
   return frameClass.deserialize(o.data);
 };
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.interface = IR.interface || {};
+ir.interface = ir.interface || {};
 
-$.extend(IR.interface, {
-  discover: andiwand.notImplemented,   // (int port, int timeout, int maxPacketSize) -> Station[]
-  send: andiwand.notImplemented,       // (Station station, RawFrame raw)
-  receive: andiwand.notImplemented,    // (Station station) -> RawFrame
-  configure: andiwand.notImplemented,  // (Station station, String name, String ssid, String password)
+$.extend(ir.interface, {
+  discover:   andiwand.notImplemented,  // Station[] discover(int port, int timeout, int maxPacketSize)
+  send:       andiwand.notImplemented,  // void send(Station station, RawFrame raw)
+  receive:    andiwand.notImplemented,  // RawFrame receive(Station station)
+  configure:  andiwand.notImplemented,  // void configure(Station station, String name, String ssid, String password)
 });
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.Protocol = function(name, frequency) {
+ir.Protocol = function(name, frequency) {
   andiwand.assert(andiwand.isString(name));
   andiwand.assert((frequency === null) || andiwand.isInt(frequency));
   this.name = name;
   this.frequency = frequency;
 
-  IR.Protocol.map[name] = this;
+  ir.Protocol.map[name] = this;
 };
 
-IR.Protocol.map = {};
+ir.Protocol.map = {};
 
-IR.Protocol.prototype.toString = function() {
+ir.Protocol.prototype.toString = function() {
   return this.name + " protocol";
 };
 
-IR.Protocol.prototype.getFrameClass = andiwand.notImplemented;
+ir.Protocol.prototype.getFrameClass = andiwand.notImplemented;
 
-IR.Protocol.prototype.encode = function(frame, settings) {
+ir.Protocol.prototype.encode = function(frame, settings) {
   andiwand.assert(frame instanceof this.getFrameClass());
-  var raw = new IR.RawFrame(frame.getFrequency(), []);
-  var helper = new IR.RawHelper(raw, settings);
+  var raw = new ir.RawFrame(frame.getFrequency(), []);
+  var helper = new ir.RawHelper(raw, settings);
   this._encode(frame, helper, settings);
   return raw;
 };
 
-IR.Protocol.prototype._encode = andiwand.notImplemented;
+ir.Protocol.prototype._encode = andiwand.notImplemented;
 
-IR.Protocol.prototype.decode = function(raw, settings) {
-  andiwand.assert(raw instanceof IR.RawFrame);
-  var helper = new IR.RawHelper(raw, settings);
+ir.Protocol.prototype.decode = function(raw, settings) {
+  andiwand.assert(raw instanceof ir.RawFrame);
+  var helper = new ir.RawHelper(raw, settings);
   return this._decode(helper, settings);
 };
 
-IR.Protocol.prototype._decode = andiwand.notImplemented;
+ir.Protocol.prototype._decode = andiwand.notImplemented;
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.Station = function(name, address, port) {
+ir.Station = function(name, address, port) {
   andiwand.assert(andiwand.isString(name));
   andiwand.assert(andiwand.isString(address));
   andiwand.assert(andiwand.isInt(port));
@@ -113,30 +107,30 @@ IR.Station = function(name, address, port) {
   this._port = port;
 };
 
-IR.Station.discover = function(port, timeout, maxSize) {
+ir.Station.discover = function(port, timeout, maxSize) {
   andiwand.assert(andiwand.isInt(port));
   andiwand.assert(andiwand.isInt(timeout));
   andiwand.assert(andiwand.isInt(maxSize));
-  IR.interface.discover(port, timeout, maxSize);
+  ir.interface.discover(port, timeout, maxSize);
 };
 
-IR.Station.prototype.send = function(frame) {
-  andiwand.assert(frame instanceof IR.Frame);
-  IR.interface.send(this, frame);
+ir.Station.prototype.send = function(frame) {
+  andiwand.assert(frame instanceof ir.Frame);
+  ir.interface.send(this, frame);
 };
 
-IR.Station.prototype.receive = function() {
-  return IR.interface.receive(this);
+ir.Station.prototype.receive = function() {
+  return ir.interface.receive(this);
 };
 
-IR.Station.prototype.configure = function(name, ssid, password) {
+ir.Station.prototype.configure = function(name, ssid, password) {
   andiwand.assert(andiwand.isString(name));
   andiwand.assert(andiwand.isString(ssid));
   andiwand.assert(andiwand.isString(password));
-  IR.interface.configure(this, name, ssid, password);
+  ir.interface.configure(this, name, ssid, password);
 };
 
-IR.Station.prototype.serialize = function() {
+ir.Station.prototype.serialize = function() {
   var result = {};
   result.name = this.name;
   result.address = this._address;
@@ -144,25 +138,25 @@ IR.Station.prototype.serialize = function() {
   return result;
 };
 
-IR.Station.deserialize = function(o) {
-  return new IR.Station(o.name, o.address, o.port);
+ir.Station.deserialize = function(o) {
+  return new ir.Station(o.name, o.address, o.port);
 };
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.RawHelper = function(raw, settings) {
-  andiwand.assert(raw instanceof IR.RawFrame);
+ir.RawHelper = function(raw, settings) {
+  andiwand.assert(raw instanceof ir.RawFrame);
   andiwand.assert(andiwand.isObject(settings));
   this._raw = raw;
   this._settings = settings;
   this._pos = 0;
 };
 
-IR.RawHelper.prototype.size = function() {
+ir.RawHelper.prototype.size = function() {
   return this._raw._times.length;
 };
 
-IR.RawHelper.prototype.position = function(pos) {
+ir.RawHelper.prototype.position = function(pos) {
   if (pos) {
     andiwand.assert(isInt(pos));
     this._pos = pos;
@@ -171,25 +165,25 @@ IR.RawHelper.prototype.position = function(pos) {
   }
 };
 
-IR.RawHelper.prototype.write = function(t) {
+ir.RawHelper.prototype.write = function(t) {
   this._raw._times[this._pos] = t;
   this._pos++;
 };
 
-IR.RawHelper.prototype.matchFrequency = function(reference) {
-  var moe = this._settings[IR.const.error_frequency_key];
+ir.RawHelper.prototype.matchFrequency = function(reference) {
+  var moe = this._settings[ir.const.error_frequency_key];
   return moe.check(this._raw._frequency, reference);
 };
 
-IR.RawHelper.prototype.matchTime = function(reference) {
-  var moe = this._settings[IR.const.error_time_key];
+ir.RawHelper.prototype.matchTime = function(reference) {
+  var moe = this._settings[ir.const.error_time_key];
   var time = this._raw._times[this._pos];
   var result = moe.check(time, reference);
   if (result) this._pos++;
   return result;
 };
 
-IR.RawHelper.prototype.match = function(references) {
+ir.RawHelper.prototype.match = function(references) {
   andiwand.assert(andiwand.isArray(references));
   for (var i = 0; i < references.length; i++) {
     if (this.matchTime(references[i])) return i;
@@ -197,63 +191,63 @@ IR.RawHelper.prototype.match = function(references) {
   return -1;
 };
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.NecFrame = function(data) {
-  IR.Frame.call(this, IR.Frame);
+ir.NecFrame = function(data) {
+  ir.Frame.call(this, ir.Frame);
   andiwand(andiwand.isInt32(data));
   this._data = data;
 };
 
-IR.NecFrame.prototype = Object.create(IR.Frame.prototype);
+ir.NecFrame.prototype = Object.create(ir.Frame.prototype);
 
-IR.NecFrame.prototype.constructor = IR.NecFrame;
+ir.NecFrame.prototype.constructor = ir.NecFrame;
 
-IR.NecFrame.prototype.getProtocol = andiwand.dynamicGet(IR, "NecProtocol");
+ir.NecFrame.prototype.getProtocol = andiwand.dynamicGet(ir, "NecProtocol");
 
-IR.NecFrame.prototype.serialize = function() {
+ir.NecFrame.prototype.serialize = function() {
   return this._data;
 };
 
-IR.NecFrame.deserialize = function(o) {
-  return new IR.NecFrame(o);
+ir.NecFrame.deserialize = function(o) {
+  return new ir.NecFrame(o);
 };
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.RawFrame = function(frequency, times) {
-  IR.Frame.call(this, IR.Frame);
+ir.RawFrame = function(frequency, times) {
+  ir.Frame.call(this, ir.Frame);
   andiwand(andiwand.isInt(frequency));
   andiwand(andiwand.isArray(times));
   this._frequency = frequency;
   this._times = times;
 };
 
-IR.RawFrame.prototype = Object.create(IR.Frame.prototype);
+ir.RawFrame.prototype = Object.create(ir.Frame.prototype);
 
-IR.RawFrame.prototype.constructor = IR.RawFrame;
+ir.RawFrame.prototype.constructor = ir.RawFrame;
 
-IR.RawFrame.prototype.getProtocol = andiwand.dynamicGet(IR, "RawProtocol");
+ir.RawFrame.prototype.getProtocol = andiwand.dynamicGet(ir, "RawProtocol");
 
-IR.RawFrame.prototype.getFrequency = function() {
+ir.RawFrame.prototype.getFrequency = function() {
   return this.frequency;
 };
 
-IR.RawFrame.prototype.serialize = function() {
+ir.RawFrame.prototype.serialize = function() {
   var result = {};
   result.frequency = this._frequency;
   result.times = this._times;
   return result;
 };
 
-IR.RawFrame.deserialize = function(o) {
-  return new IR.RawFrame(o.frequency, o.times);
+ir.RawFrame.deserialize = function(o) {
+  return new ir.RawFrame(o.frequency, o.times);
 };
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.NecProtocol = new IR.Protocol("NEC", 38222);
-$.extend(IR.NecProtocol, {
+ir.NecProtocol = new ir.Protocol("NEC", 38222);
+$.extend(ir.NecProtocol, {
   _TIME_INIT_MARK: 9000e-6,
   _TIME_INIT_SPACE: 4500e-6,
   _TIME_REPEAT_SPACE: 2250e-6,
@@ -266,7 +260,7 @@ $.extend(IR.NecProtocol, {
   _BITS: 32,
   _REPEAT: 0xffffffff,
 
-  getFrameClass: andiwand.dynamicGet(IR, "NecFrame"),
+  getFrameClass: andiwand.dynamicGet(ir, "NecFrame"),
   _encode: function(frame, helper, settings) {
     helper.write(this._TIME_INIT_MARK);
 
@@ -314,15 +308,15 @@ $.extend(IR.NecProtocol, {
     if (!helper.matchTime(this._TIME_END_MARK)) return null;
     if (helper.position() != helper.size()) return null;
 
-    return new IR.NecFrame(data);
+    return new ir.NecFrame(data);
   }
 });
 
-var IR = IR || {};
+var ir = ir || {};
 
-IR.RawProtocol = new IR.Protocol("RAW", null);
-$.extend(IR.RawProtocol, {
-  getFrameClass: andiwand.dynamicGet(IR, "RawFrame"),
+ir.RawProtocol = new ir.Protocol("RAW", null);
+$.extend(ir.RawProtocol, {
+  getFrameClass: andiwand.dynamicGet(ir, "RawFrame"),
   encode: function(raw, settings) {
     return raw;
   },

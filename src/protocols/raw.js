@@ -1,8 +1,8 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.RawProtocol = new IR.Protocol("RAW", null);
-$.extend(IR.RawProtocol, {
-  getFrameClass: andiwand.dynamicGet(IR, "RawFrame"),
+ir.RawProtocol = new ir.Protocol("RAW", null);
+$.extend(ir.RawProtocol, {
+  getFrameClass: andiwand.dynamicGet(ir, "RawFrame"),
   encode: function(raw, settings) {
     return raw;
   },

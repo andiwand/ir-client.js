@@ -1,10 +1,10 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.interface = IR.interface || {};
+ir.interface = ir.interface || {};
 
-$.extend(IR.interface, {
-  discover: andiwand.notImplemented,   // (int port, int timeout, int maxPacketSize) -> Station[]
-  send: andiwand.notImplemented,       // (Station station, RawFrame raw)
-  receive: andiwand.notImplemented,    // (Station station) -> RawFrame
-  configure: andiwand.notImplemented,  // (Station station, String name, String ssid, String password)
+$.extend(ir.interface, {
+  discover:   andiwand.notImplemented,  // Station[] discover(int port, int timeout, int maxPacketSize)
+  send:       andiwand.notImplemented,  // void send(Station station, RawFrame raw)
+  receive:    andiwand.notImplemented,  // RawFrame receive(Station station)
+  configure:  andiwand.notImplemented,  // void configure(Station station, String name, String ssid, String password)
 });

@@ -1,27 +1,27 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.Frame = function() {};
+ir.Frame = function() {};
 
-IR.Frame.prototype.toString = function() {
+ir.Frame.prototype.toString = function() {
   return JSON.stringify(this.serialize());
 };
 
-IR.Frame.prototype.getProtocol = andiwand.notImplemented;
+ir.Frame.prototype.getProtocol = andiwand.notImplemented;
 
-IR.Frame.prototype.getFrequency = function() {
+ir.Frame.prototype.getFrequency = function() {
   return this.getProtocol().frequency;
 };
 
-IR.Frame.prototype.encode = function(settings) {
+ir.Frame.prototype.encode = function(settings) {
   return this.getProtocol().encode(this, settings);
 };
 
-IR.Frame.prototype.decode = function(raw, settings) {
+ir.Frame.prototype.decode = function(raw, settings) {
   return this.getProtocol().decode(raw, settings);
 };
 
-IR.Frame.serialize = function(frame) {
-  andiwand.assert(frame instanceof IR.Frame);
+ir.Frame.serialize = function(frame) {
+  andiwand.assert(frame instanceof ir.Frame);
   var result = {};
   var protocol = frame.getProtocol();
   result.protocol = protocol.name;
@@ -29,10 +29,10 @@ IR.Frame.serialize = function(frame) {
   return result;
 };
 
-IR.Frame.prototype.serialize = andiwand.notImplemented;
+ir.Frame.prototype.serialize = andiwand.notImplemented;
 
-IR.Frame.deserialize = function(o) {
-  var protocol = IR.Protocol.map[o.protocol];
+ir.Frame.deserialize = function(o) {
+  var protocol = ir.Protocol.map[o.protocol];
   var frameClass = protocol.getFrameClass();
   return frameClass.deserialize(o.data);
 };

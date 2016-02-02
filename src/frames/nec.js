@@ -1,21 +1,21 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.NecFrame = function(data) {
-  IR.Frame.call(this, IR.Frame);
+ir.NecFrame = function(data) {
+  ir.Frame.call(this, ir.Frame);
   andiwand(andiwand.isInt32(data));
   this._data = data;
 };
 
-IR.NecFrame.prototype = Object.create(IR.Frame.prototype);
+ir.NecFrame.prototype = Object.create(ir.Frame.prototype);
 
-IR.NecFrame.prototype.constructor = IR.NecFrame;
+ir.NecFrame.prototype.constructor = ir.NecFrame;
 
-IR.NecFrame.prototype.getProtocol = andiwand.dynamicGet(IR, "NecProtocol");
+ir.NecFrame.prototype.getProtocol = andiwand.dynamicGet(ir, "NecProtocol");
 
-IR.NecFrame.prototype.serialize = function() {
+ir.NecFrame.prototype.serialize = function() {
   return this._data;
 };
 
-IR.NecFrame.deserialize = function(o) {
-  return new IR.NecFrame(o);
+ir.NecFrame.deserialize = function(o) {
+  return new ir.NecFrame(o);
 };

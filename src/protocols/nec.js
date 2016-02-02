@@ -1,7 +1,7 @@
-var IR = IR || {};
+var ir = ir || {};
 
-IR.NecProtocol = new IR.Protocol("NEC", 38222);
-$.extend(IR.NecProtocol, {
+ir.NecProtocol = new ir.Protocol("NEC", 38222);
+$.extend(ir.NecProtocol, {
   _TIME_INIT_MARK: 9000e-6,
   _TIME_INIT_SPACE: 4500e-6,
   _TIME_REPEAT_SPACE: 2250e-6,
@@ -14,7 +14,7 @@ $.extend(IR.NecProtocol, {
   _BITS: 32,
   _REPEAT: 0xffffffff,
 
-  getFrameClass: andiwand.dynamicGet(IR, "NecFrame"),
+  getFrameClass: andiwand.dynamicGet(ir, "NecFrame"),
   _encode: function(frame, helper, settings) {
     helper.write(this._TIME_INIT_MARK);
 
@@ -62,6 +62,6 @@ $.extend(IR.NecProtocol, {
     if (!helper.matchTime(this._TIME_END_MARK)) return null;
     if (helper.position() != helper.size()) return null;
 
-    return new IR.NecFrame(data);
+    return new ir.NecFrame(data);
   }
 });

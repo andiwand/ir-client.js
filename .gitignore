@@ -1,4 +1,4 @@
 node_modules/
-libs/
+bower_components/
 .npm-debug.log
 tmp
